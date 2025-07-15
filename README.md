@@ -440,7 +440,7 @@ nvd-monitor check
 ### Información de Contacto
 - Desarrollador: Juan Pablo Díaz Ezcurdia [jpdiaz.com](https://jpdiaz.com/)
 - Versión: 1.0.0
-- Licencia: LGPL-3 license
+- Licencia: LGPL-3.0 license
 - Última actualización: Julio 2025
 
 
