@@ -26,7 +26,7 @@ NVD Monitor es una aplicación desarrollada para Ubuntu 22.04 que consulta la Na
 │  │   Scheduler │    │ NVD Client  │    │   Database  │          │
 │  │             │    │             │    │   Manager   │          │
 │  │ ┌─────────┐ │    │ ┌─────────┐ │    │ ┌─────────┐ │          │
-│  │ │ Cron    │ │───▶│ │ API     │ │───▶│ │ MySQL   │ │         │
+│  │ │ Cron    │ │ ─▶│ │ API     │  │ ─▶│ │ MySQL   │ │          │
 │  │ │ 6 hours │ │    │ │ Client  │ │    │ │ Storage │ │          │
 │  │ └─────────┘ │    │ └─────────┘ │    │ └─────────┘ │          │
 │  └─────────────┘    └─────────────┘    └─────────────┘          │
@@ -35,7 +35,7 @@ NVD Monitor es una aplicación desarrollada para Ubuntu 22.04 que consulta la Na
 │  │   Filter    │    │  Analyzer   │    │   Notifier  │          │
 │  │             │    │             │    │             │          │
 │  │ ┌─────────┐ │    │ ┌─────────┐ │    │ ┌─────────┐ │          │
-│  │ │Critical │ │───▶│ │Zero-day │ │───▶│ │  Email  │ │         │
+│  │ │Critical │ │ ─▶│ │Zero-day │ │  ─▶│ │  Email  │ │          │
 │  │ │High Sev │ │    │ │Detector │ │    │ │Reporter │ │          │
 │  │ └─────────┘ │    │ └─────────┘ │    │ └─────────┘ │          │
 │  └─────────────┘    └─────────────┘    └─────────────┘          │
