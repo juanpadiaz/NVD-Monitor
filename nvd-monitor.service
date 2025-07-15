@@ -1,0 +1,43 @@
+[Unit]
+Description=NVD Vulnerability Monitor
+Documentation=https://github.com/company/nvd-monitor
+After=network.target mysql.service
+Requires=mysql.service
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+[Service]
+Type=simple
+User=nvd_monitor
+Group=nvd_monitor
+WorkingDirectory=/opt/nvd_monitor
+Environment=PATH=/opt/nvd_monitor/venv/bin
+Environment=PYTHONPATH=/opt/nvd_monitor/bin
+ExecStart=/opt/nvd_monitor/venv/bin/python /opt/nvd_monitor/bin/nvd_monitor.py --config /etc/nvd_monitor/config.ini
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=30
+Restart=always
+RestartSec=10
+
+# Límites de recursos
+LimitNOFILE=65536
+LimitNPROC=32768
+
+# Seguridad
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/log/nvd_monitor /opt/nvd_monitor/logs
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=nvd-monitor
+
+[Install]
+WantedBy=multi-user.target

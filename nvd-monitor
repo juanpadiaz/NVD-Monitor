@@ -1,0 +1,445 @@
+#!/bin/bash
+
+# Script de utilidad para NVD Monitor
+# Proporciona comandos fáciles de usar para administrar el servicio
+
+# Colores para output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Configuración
+SERVICE_NAME="nvd-monitor"
+CONFIG_FILE="/etc/nvd_monitor/config.ini"
+LOG_FILE="/var/log/nvd_monitor/nvd_monitor.log"
+APP_DIR="/opt/nvd_monitor"
+BIN_FILE="$APP_DIR/bin/nvd_monitor.py"
+
+# Funciones de utilidad
+log_info() {
+    echo -e "${GREEN}[INFO]${NC} $1"
+}
+
+log_warn() {
+    echo -e "${YELLOW}[WARN]${NC} $1"
+}
+
+log_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
+
+log_blue() {
+    echo -e "${BLUE}[INFO]${NC} $1"
+}
+
+# Verificar si se ejecuta como root cuando es necesario
+check_root() {
+    if [[ $EUID -ne 0 ]]; then
+        log_error "Este comando requiere permisos de root"
+        exit 1
+    fi
+}
+
+# Verificar si el servicio existe
+check_service() {
+    if ! systemctl list-unit-files | grep -q "^$SERVICE_NAME.service"; then
+        log_error "El servicio $SERVICE_NAME no está instalado"
+        exit 1
+    fi
+}
+
+# Mostrar estado del servicio
+show_status() {
+    check_service
+    
+    echo "=== Estado del Servicio NVD Monitor ==="
+    systemctl status $SERVICE_NAME --no-pager
+    echo
+    
+    echo "=== Información del Sistema ==="
+    echo "• Configuración: $CONFIG_FILE"
+    echo "• Log principal: $LOG_FILE"
+    echo "• Directorio: $APP_DIR"
+    echo "• PID: $(pgrep -f nvd_monitor.py || echo 'No ejecutándose')"
+    echo
+    
+    echo "=== Estadísticas de Base de Datos ==="
+    if mysql -u nvd_user -p"$(grep password $CONFIG_FILE | cut -d'=' -f2 | xargs)" nvd_monitor -e "
+        SELECT 
+            COUNT(*) as total_vulnerabilities,
+            SUM(CASE WHEN severity = 'CRITICAL' THEN 1 ELSE 0 END) as critical,
+            SUM(CASE WHEN severity = 'HIGH' THEN 1 ELSE 0 END) as high,
+            SUM(CASE WHEN exploit_code = 1 THEN 1 ELSE 0 END) as with_exploits
+        FROM vulnerabilities;
+    " 2>/dev/null; then
+        echo "✓ Conexión a base de datos OK"
+    else
+        echo "✗ Error conectando a base de datos"
+    fi
+}
+
+# Iniciar servicio
+start_service() {
+    check_root
+    check_service
+    
+    log_info "Iniciando servicio NVD Monitor..."
+    if systemctl start $SERVICE_NAME; then
+        log_info "Servicio iniciado exitosamente"
+        sleep 2
+        systemctl status $SERVICE_NAME --no-pager
+    else
+        log_error "Error iniciando el servicio"
+        exit 1
+    fi
+}
+
+# Detener servicio
+stop_service() {
+    check_root
+    check_service
+    
+    log_info "Deteniendo servicio NVD Monitor..."
+    if systemctl stop $SERVICE_NAME; then
+        log_info "Servicio detenido exitosamente"
+    else
+        log_error "Error deteniendo el servicio"
+        exit 1
+    fi
+}
+
+# Reiniciar servicio
+restart_service() {
+    check_root
+    check_service
+    
+    log_info "Reiniciando servicio NVD Monitor..."
+    if systemctl restart $SERVICE_NAME; then
+        log_info "Servicio reiniciado exitosamente"
+        sleep 2
+        systemctl status $SERVICE_NAME --no-pager
+    else
+        log_error "Error reiniciando el servicio"
+        exit 1
+    fi
+}
+
+# Mostrar logs
+show_logs() {
+    echo "=== Logs del Servicio (presiona Ctrl+C para salir) ==="
+    
+    if [[ "$1" == "follow" ]] || [[ "$1" == "f" ]]; then
+        journalctl -u $SERVICE_NAME -f --no-pager
+    elif [[ "$1" == "file" ]]; then
+        if [[ -f "$LOG_FILE" ]]; then
+            tail -f "$LOG_FILE"
+        else
+            log_error "Archivo de log no encontrado: $LOG_FILE"
+        fi
+    else
+        journalctl -u $SERVICE_NAME --no-pager -n 50
+    fi
+}
+
+# Ejecutar verificación manual
+run_check() {
+    log_info "Ejecutando verificación manual..."
+    
+    if [[ -f "$BIN_FILE" ]]; then
+        sudo -u nvd_monitor $APP_DIR/venv/bin/python "$BIN_FILE" \
+            --config "$CONFIG_FILE" --once
+    else
+        log_error "Archivo de aplicación no encontrado: $BIN_FILE"
+        exit 1
+    fi
+}
+
+# Editar configuración
+edit_config() {
+    check_root
+    
+    if [[ -f "$CONFIG_FILE" ]]; then
+        log_info "Editando configuración..."
+        nano "$CONFIG_FILE"
+        
+        echo
+        log_warn "Recuerda reiniciar el servicio después de cambios:"
+        log_warn "  nvd-monitor restart"
+    else
+        log_error "Archivo de configuración no encontrado: $CONFIG_FILE"
+        exit 1
+    fi
+}
+
+# Mostrar configuración actual
+show_config() {
+    if [[ -f "$CONFIG_FILE" ]]; then
+        echo "=== Configuración Actual ==="
+        cat "$CONFIG_FILE"
+    else
+        log_error "Archivo de configuración no encontrado: $CONFIG_FILE"
+        exit 1
+    fi
+}
+
+# Verificar estado del sistema
+health_check() {
+    echo "=== Verificación de Salud del Sistema ==="
+    
+    # Verificar servicio
+    if systemctl is-active --quiet $SERVICE_NAME; then
+        log_info "✓ Servicio está ejecutándose"
+    else
+        log_error "✗ Servicio no está ejecutándose"
+    fi
+    
+    # Verificar configuración
+    if [[ -f "$CONFIG_FILE" ]]; then
+        log_info "✓ Archivo de configuración existe"
+    else
+        log_error "✗ Archivo de configuración no encontrado"
+    fi
+    
+    # Verificar aplicación
+    if [[ -f "$BIN_FILE" ]]; then
+        log_info "✓ Aplicación instalada"
+    else
+        log_error "✗ Aplicación no encontrada"
+    fi
+    
+    # Verificar logs
+    if [[ -f "$LOG_FILE" ]]; then
+        log_info "✓ Archivo de log accesible"
+        log_blue "  Últimas 3 líneas:"
+        tail -n 3 "$LOG_FILE" | sed 's/^/    /'
+    else
+        log_warn "⚠ Archivo de log no encontrado"
+    fi
+    
+    # Verificar MySQL
+    if systemctl is-active --quiet mysql; then
+        log_info "✓ MySQL está ejecutándose"
+    else
+        log_error "✗ MySQL no está ejecutándose"
+    fi
+    
+    # Verificar conectividad a internet
+    if ping -c 1 services.nvd.nist.gov &>/dev/null; then
+        log_info "✓ Conectividad a NVD OK"
+    else
+        log_warn "⚠ No se puede conectar a NVD"
+    fi
+    
+    # Verificar espacio en disco
+    disk_usage=$(df /var/log/nvd_monitor/ | awk 'NR==2 {print $5}' | sed 's/%//')
+    if [[ $disk_usage -lt 80 ]]; then
+        log_info "✓ Espacio en disco OK ($disk_usage%)"
+    else
+        log_warn "⚠ Poco espacio en disco ($disk_usage%)"
+    fi
+}
+
+# Mostrar estadísticas
+show_stats() {
+    echo "=== Estadísticas de Vulnerabilidades ==="
+    
+    # Obtener credenciales de la base de datos
+    if [[ -f "$CONFIG_FILE" ]]; then
+        DB_USER=$(grep "^user" "$CONFIG_FILE" | cut -d'=' -f2 | xargs)
+        DB_PASS=$(grep "^password" "$CONFIG_FILE" | cut -d'=' -f2 | xargs)
+        DB_NAME=$(grep "^database" "$CONFIG_FILE" | cut -d'=' -f2 | xargs)
+        
+        # Ejecutar consultas estadísticas
+        mysql -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" -e "
+            SELECT 
+                'Total Vulnerabilidades' as Métrica,
+                COUNT(*) as Valor
+            FROM vulnerabilities
+            UNION ALL
+            SELECT 
+                'Críticas',
+                COUNT(*)
+            FROM vulnerabilities 
+            WHERE severity = 'CRITICAL'
+            UNION ALL
+            SELECT 
+                'Altas',
+                COUNT(*)
+            FROM vulnerabilities 
+            WHERE severity = 'HIGH'
+            UNION ALL
+            SELECT 
+                'Con Exploits',
+                COUNT(*)
+            FROM vulnerabilities 
+            WHERE exploit_code = 1
+            UNION ALL
+            SELECT 
+                'Últimas 24h',
+                COUNT(*)
+            FROM vulnerabilities 
+            WHERE created_at >= NOW() - INTERVAL 24 HOUR;
+        " 2>/dev/null || log_error "Error conectando a la base de datos"
+        
+        echo
+        echo "=== Top 5 Vulnerabilidades Críticas Recientes ==="
+        mysql -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" -e "
+            SELECT 
+                cve_id as CVE,
+                severity as Severidad,
+                base_score as Score,
+                IF(exploit_code, 'SÍ', 'NO') as Exploit,
+                DATE_FORMAT(published_date, '%Y-%m-%d') as Fecha
+            FROM vulnerabilities 
+            WHERE severity IN ('CRITICAL', 'HIGH')
+            ORDER BY base_score DESC, published_date DESC 
+            LIMIT 5;
+        " 2>/dev/null
+    else
+        log_error "No se puede acceder a la configuración"
+    fi
+}
+
+# Limpiar logs antiguos
+cleanup_logs() {
+    check_root
+    
+    log_info "Limpiando logs antiguos..."
+    
+    # Limpiar logs de más de 30 días
+    find /var/log/nvd_monitor/ -name "*.log.*" -mtime +30 -delete
+    
+    # Limpiar logs de journald
+    journalctl --vacuum-time=30d
+    
+    log_info "Limpieza completada"
+}
+
+# Backup de configuración y datos
+backup_data() {
+    check_root
+    
+    BACKUP_DIR="/opt/nvd_monitor/backups"
+    TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+    BACKUP_FILE="$BACKUP_DIR/nvd_monitor_backup_$TIMESTAMP.tar.gz"
+    
+    log_info "Creando backup..."
+    
+    # Crear directorio de backup
+    mkdir -p "$BACKUP_DIR"
+    
+    # Crear backup de configuración
+    tar czf "$BACKUP_FILE" \
+        "$CONFIG_FILE" \
+        "$APP_DIR/bin/" \
+        "/etc/systemd/system/nvd-monitor.service" \
+        2>/dev/null
+    
+    # Backup de base de datos
+    DB_USER=$(grep "^user" "$CONFIG_FILE" | cut -d'=' -f2 | xargs)
+    DB_PASS=$(grep "^password" "$CONFIG_FILE" | cut -d'=' -f2 | xargs)
+    DB_NAME=$(grep "^database" "$CONFIG_FILE" | cut -d'=' -f2 | xargs)
+    
+    if mysqldump -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" > "$BACKUP_DIR/database_$TIMESTAMP.sql" 2>/dev/null; then
+        log_info "Backup de base de datos creado"
+    else
+        log_warn "No se pudo crear backup de base de datos"
+    fi
+    
+    log_info "Backup creado: $BACKUP_FILE"
+    
+    # Limpiar backups antiguos (mantener solo 10)
+    ls -t "$BACKUP_DIR"/nvd_monitor_backup_*.tar.gz | tail -n +11 | xargs rm -f 2>/dev/null
+}
+
+# Mostrar ayuda
+show_help() {
+    echo "NVD Monitor - Sistema de Monitoreo de Vulnerabilidades"
+    echo
+    echo "USO:"
+    echo "  nvd-monitor <comando> [opciones]"
+    echo
+    echo "COMANDOS:"
+    echo "  start         Iniciar el servicio"
+    echo "  stop          Detener el servicio"
+    echo "  restart       Reiniciar el servicio"
+    echo "  status        Mostrar estado del servicio y estadísticas"
+    echo "  logs [f]      Mostrar logs (f=seguir en tiempo real)"
+    echo "  logs file     Mostrar logs del archivo"
+    echo "  check         Ejecutar verificación manual"
+    echo "  config        Editar archivo de configuración"
+    echo "  show-config   Mostrar configuración actual"
+    echo "  health        Verificar estado del sistema"
+    echo "  stats         Mostrar estadísticas de vulnerabilidades"
+    echo "  cleanup       Limpiar logs antiguos"
+    echo "  backup        Crear backup de configuración y datos"
+    echo "  help          Mostrar esta ayuda"
+    echo
+    echo "EJEMPLOS:"
+    echo "  nvd-monitor start              # Iniciar servicio"
+    echo "  nvd-monitor logs f             # Ver logs en tiempo real"
+    echo "  nvd-monitor check              # Verificación manual"
+    echo "  nvd-monitor stats              # Ver estadísticas"
+    echo
+    echo "ARCHIVOS:"
+    echo "  Configuración: $CONFIG_FILE"
+    echo "  Logs:         $LOG_FILE"
+    echo "  Servicio:     /etc/systemd/system/$SERVICE_NAME.service"
+    echo
+    echo "Para más información: https://github.com/company/nvd-monitor"
+}
+
+# Función principal
+main() {
+    case "${1:-help}" in
+        "start")
+            start_service
+            ;;
+        "stop")
+            stop_service
+            ;;
+        "restart")
+            restart_service
+            ;;
+        "status")
+            show_status
+            ;;
+        "logs")
+            show_logs "$2"
+            ;;
+        "check")
+            run_check
+            ;;
+        "config")
+            edit_config
+            ;;
+        "show-config")
+            show_config
+            ;;
+        "health")
+            health_check
+            ;;
+        "stats")
+            show_stats
+            ;;
+        "cleanup")
+            cleanup_logs
+            ;;
+        "backup")
+            backup_data
+            ;;
+        "help"|"-h"|"--help")
+            show_help
+            ;;
+        *)
+            echo "Comando desconocido: $1"
+            echo "Usa 'nvd-monitor help' para ver los comandos disponibles"
+            exit 1
+            ;;
+    esac
+}
+
+# Ejecutar función principal con todos los argumentos
+main "$@"
