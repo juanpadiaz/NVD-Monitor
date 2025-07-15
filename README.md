@@ -6,7 +6,7 @@ NVD Monitor es una aplicación desarrollada para Ubuntu 22.04 que consulta la Na
 
 ## Características
 
-- ✅ **Monitoreo automatizado** de la NVD cada 6 horas (configurable)
+- ✅ **Monitoreo automatizado** de las publicaciones de la National Vulnerability Database cada 6 horas (configurable)
 - ✅ **Filtrado inteligente** de vulnerabilidades críticas (CRITICAL/HIGH)
 - ✅ **Detección de zero-days** y exploits disponibles
 - ✅ **Almacenamiento en MySQL** con historial completo
