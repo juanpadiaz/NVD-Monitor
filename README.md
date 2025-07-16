@@ -82,7 +82,7 @@ NVD Monitor es una aplicación desarrollada para Ubuntu 22.04 que consulta la Na
 
 ```bash
 # Descargar e instalar
-wget -O install.sh https://raw.githubusercontent.com/company/nvd-monitor/main/install.sh
+wget -O install.sh https://raw.githubusercontent.com/juanpadiaz/nvd-monitor/main/install.sh
 chmod +x install.sh
 sudo ./install.sh
 ```
@@ -91,7 +91,7 @@ sudo ./install.sh
 
 ```bash
 # 1. Clonar repositorio
-git clone https://github.com/company/nvd-monitor.git
+git clone https://github.com/juanpadiaz/nvd-monitor.git
 cd nvd-monitor
 
 # 2. Ejecutar instalador
