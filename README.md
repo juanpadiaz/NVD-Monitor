@@ -96,7 +96,7 @@ NVD Monitor es una aplicación Python que:
 
 ```bash
 # Clonar o descargar los archivos del sistema
-wget https://github.com/tu-repo/nvd-monitor/archive/main.zip
+wget https://github.com/juanpadiaz/nvd-monitor/archive/main.zip
 unzip main.zip
 cd nvd-monitor-main
 
