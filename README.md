@@ -443,5 +443,6 @@ nvd-monitor check
 - Licencia: LGPL-3.0 license
 - Última actualización: Julio 2025
 
+Es importante recordar que las vulnerabilidades zero-day, por definición, son desconocidas hasta que se descubren y divulgan, por lo que la información pública aparece después del descubrimiento inicial.
 
 Nota: Este sistema está diseñado para complementar, no reemplazar, las herramientas de seguridad existentes. Siempre valide los resultados y mantenga actualizadas las fuentes de threat intelligence.
