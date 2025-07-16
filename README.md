@@ -430,6 +430,39 @@ nvd-monitor check
 
 ---
 
+### Roadmap y Futuras Mejoras
+Existen varias fuentes con información pública sobre vulnerabilidades zero-day
+
+#### Bases de datos oficiales:
+
+- CVE (Common Vulnerabilities and Exposures) - La base de datos más completa y autorizada
+- NVD (National Vulnerability Database) del NIST - Versión enriquecida de CVE con métricas CVSS
+- CISA KEV (Known Exploited Vulnerabilities) - Catálogo de vulnerabilidades explotadas activamente
+
+#### Fuentes de investigación de seguridad:
+
+- Google Project Zero - Publica investigaciones detalladas sobre zero-days
+- Exploit Database - Repositorio de exploits y pruebas de concepto
+- Full Disclosure - Lista de correo para divulgación de vulnerabilidades
+- Bugtraq - Archivo histórico de vulnerabilidades
+
+#### Plataformas de threat intelligence:
+
+- MITRE ATT&CK - Framework con técnicas de ataque incluyendo zero-days
+- Vulnerability databases de proveedores como IBM X-Force, Recorded Future
+- Security advisories de fabricantes (Microsoft, Adobe, etc.)
+
+#### Fuentes académicas y de investigación:
+
+- Papers de conferencias como Black Hat, DEF CON, USENIX Security
+- Threat intelligence reports de empresas de ciberseguridad
+
+## Próximas Versiones
+
+- **v1.1**: Interfaz web de monitoreo a traves de tableros custom en Grafana 
+- **v1.2**: Integración con más fuentes de inteligencia 
+
+
 ### Contribuciones
 - Para contribuir al proyecto: [github](https://github.com/juanpadiaz/NVD-Monitor) 
 
