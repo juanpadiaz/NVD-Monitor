@@ -72,7 +72,7 @@ NVD Monitor es una aplicación desarrollada para Ubuntu 22.04 que consulta la Na
 
 ### Requisitos del Sistema
 
-- Ubuntu 22.04 LTS
+- Ubuntu 24.04 LTS
 - Python 3.10+
 - MySQL 8.0+
 - Acceso a internet
