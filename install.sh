@@ -48,7 +48,7 @@ apt update && apt upgrade -y
 
 # Instalar dependencias del sistema
 log_info "Instalando dependencias del sistema..."
-apt install -y python3 python3-pip python3-venv curl wget git systemd
+apt install -y python3 python3-pip python3-venv curl wget git systemd mysql-server
 
 # Crear usuario del sistema
 log_info "Creando usuario del sistema..."
