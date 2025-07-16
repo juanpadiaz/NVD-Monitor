@@ -31,8 +31,8 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 # Verificar Ubuntu 22.04
-if ! grep -q "22.04" /etc/os-release; then
-    warn "Este script está diseñado para Ubuntu 22.04"
+if ! grep -q "24.04" /etc/os-release; then
+    warn "Este script está diseñado para Ubuntu 24.04"
     read -p "¿Continuar de todos modos? (y/n): " -n 1 -r
     echo
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
