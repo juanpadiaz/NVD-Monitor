@@ -668,11 +668,11 @@ Nota: Este sistema está diseñado para complementar, no reemplazar, las herrami
 📊 Métricas del Proyecto: \
 📈 Líneas de Código:    ~3,500 líneas \
 🧪 Cobertura de Tests:  95%+ \
-🔒 Score de Seguridad:  A+
-📚 Documentación:       100% completa
-⚡ Rendimiento:         Optimizado
-🐳 Contenedores:        Listos
-🔧 CI/CD:              Automatizado
-📦 Dependencias:       5 principales
+🔒 Score de Seguridad:  A+ \
+📚 Documentación:       100% completa \
+⚡ Rendimiento:         Optimizado \
+🐳 Contenedores:        Listos \
+🔧 CI/CD:              Automatizado \
+📦 Dependencias:       5 principales \
 🛡️ Vulnerabilidades:   0 conocidas
 
