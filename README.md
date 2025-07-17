@@ -655,3 +655,13 @@ sudo sed -i 's/level = INFO/level = DEBUG/' /etc/nvd-monitor/config.ini
 sudo systemctl restart nvd-monitor
 # Ver logs detallados, luego revertir:
 sudo sed -i 's
+```
+### Información de Contacto
+
+- Desarrollador: Juan Pablo Díaz Ezcurdia [jpdiaz.com](https://jpdiaz.com/)
+- Versión: 1.0.0
+- Licencia: LGPL-2.1 license
+- Última actualización: Julio 2025
+
+Nota: Este sistema está diseñado para complementar, no reemplazar, las herramientas de seguridad existentes. Siempre valide los resultados y mantenga actualizadas las fuentes de threat intelligence.
+
