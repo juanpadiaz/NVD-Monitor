@@ -665,9 +665,9 @@ sudo sed -i 's
 
 Nota: Este sistema está diseñado para complementar, no reemplazar, las herramientas de seguridad existentes. Siempre valide los resultados y mantenga actualizadas las fuentes de threat intelligence.
 
-📊 Métricas del Proyecto:
-📈 Líneas de Código:    ~3,500 líneas
-🧪 Cobertura de Tests:  95%+
+📊 Métricas del Proyecto: \
+📈 Líneas de Código:    ~3,500 líneas \
+🧪 Cobertura de Tests:  95%+ \
 🔒 Score de Seguridad:  A+
 📚 Documentación:       100% completa
 ⚡ Rendimiento:         Optimizado
