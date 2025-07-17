@@ -147,7 +147,7 @@ graph TB
 
 ```bash
 # 1. Clonar el repositorio
-git clone https://github.com/tu-usuario/nvd-monitor.git
+git clone https://github.com/juanpadiaz/nvd-monitor.git
 cd nvd-monitor
 
 # 2. Ejecutar instalación completa
