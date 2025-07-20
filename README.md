@@ -153,15 +153,6 @@ cd nvd-monitor
 # 2. Ejecutar instalación completa
 sudo bash install.sh
 
-# O ver ayuda
-sudo bash install.sh --help
-
-# Durante la instalación, el script preguntará:
-# 1. ¿Configurar API Key de NVD? (Recomendado)
-# 2. ¿Configurar notificaciones por email?
-# 3. ¿Intervalo de monitoreo en horas?
-# 4. ¿Probar configuraciones?
-
 # 3. Configurar el sistema (se ejecuta automáticamente)
 # Seguir las instrucciones interactivas
 ```
