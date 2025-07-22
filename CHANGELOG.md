@@ -10,7 +10,7 @@ y este proyecto adhiere al [Versionado Semántico](https://semver.org/spec/v2.0.
 ### Añadido
 - 🛡️ Sistema de monitoreo automatizado de vulnerabilidades NVD
 - 🔍 Filtrado inteligente de vulnerabilidades críticas y de alto riesgo
-- 🚨 Detección de vulnerabilidades zero-day en tiempo real
+- 🚨 Detección de vulnerabilidades zero-day
 - 💾 Almacenamiento persistente en base de datos MySQL/MariaDB
 - 📧 Sistema de notificaciones por email con formato HTML profesional
 - 🔧 Comandos de administración integrados (nvd-admin)
