@@ -74,7 +74,6 @@ y este proyecto adhiere al [Versionado Semántico](https://semver.org/spec/v2.0.
 - [ ] Filtros personalizables por producto/vendor
 - [ ] Exportación de reportes en PDF
 - [ ] Soporte para webhooks
-- [ ] Múltiples destinatarios de email
 
 ### Planificado para v1.2.0
 - [ ] Soporte para cluster multi-instancia
