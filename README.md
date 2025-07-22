@@ -470,7 +470,7 @@ sudo cat /etc/nvd-monitor/config.ini | grep -A5 database
 ## 👨‍💻 Autor y Licencia
 
 - **Desarrollador**: Juan Pablo Díaz Ezcurdia
-- **Website**: [jpdiaz.dev](https://jpdiaz.dev)
+- **Website**: [jpdiaz.com](https://jpdiaz.com)
 - **Licencia**: MIT License
 - **Versión**: 1.0.9
 - **Última actualización**: Enero 2025
