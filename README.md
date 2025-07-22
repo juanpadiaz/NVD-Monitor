@@ -305,7 +305,7 @@ Ver detalles completos en NVD
 
 ```dockerfile
 FROM ubuntu:22.04
-MAINTAINER Juan Pablo Díaz <jpdiaz@example.com>
+MAINTAINER Juan Pablo Díaz <jpdiaz.com>
 
 # Instalar dependencias
 RUN apt-get update && apt-get install -y \
