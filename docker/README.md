@@ -7,7 +7,7 @@
 ```bash
 # Clonar el repositorio
 git clone https://github.com/juanpadiaz/nvd-monitor.git
-cd nvd-monitor
+cd nvd-monitor/docker
 
 # Copiar archivo de variables de entorno
 cp .env.example .env
