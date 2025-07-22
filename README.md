@@ -188,6 +188,7 @@ El instalador solicita interactivamente:
 
 3. **Credenciales de Email**
    - Email remitente
+   - Habilitar la verificación de dos pasos (para Gmail)
    - Contraseña (usar contraseña de aplicación para Gmail/Outlook)
    - Emails destinatarios (soporta múltiples separados por comas)
 
