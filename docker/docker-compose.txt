@@ -1,0 +1,117 @@
+version: '3.8'
+
+services:
+  nvd-monitor:
+    build: .
+    image: nvd-monitor:latest
+    container_name: nvd-monitor
+    restart: unless-stopped
+    environment:
+      # Configuración de NVD API
+      - NVD_API_KEY=${NVD_API_KEY}
+      
+      # Configuración SMTP
+      - SMTP_SERVER=${SMTP_SERVER:-smtp.gmail.com}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SENDER_EMAIL=${SENDER_EMAIL}
+      - SENDER_PASSWORD=${SENDER_PASSWORD}
+      - RECIPIENT_EMAIL=${RECIPIENT_EMAIL}
+      
+      # Configuración de monitoreo
+      - CHECK_INTERVAL=${CHECK_INTERVAL:-4}
+      
+      # Base de datos
+      - DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-nvd_monitor_root_2024}
+      
+      # Timezone
+      - TZ=${TZ:-UTC}
+    
+    volumes:
+      # Datos persistentes
+      - nvd-db:/var/lib/mysql
+      - nvd-config:/etc/nvd-monitor
+      - nvd-logs:/var/log/nvd-monitor
+      - nvd-backups:/var/lib/nvd-monitor/backups
+    
+    healthcheck:
+      test: ["CMD", "nvd-admin", "test-db"]
+      interval: 5m
+      timeout: 10s
+      retries: 3
+      start_period: 2m
+    
+    # Límites de recursos (ajustar según necesidad)
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    
+    # Red personalizada para mejor aislamiento
+    networks:
+      - nvd-network
+    
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Servicio opcional de backup
+  nvd-backup:
+    image: nvd-monitor:latest
+    container_name: nvd-backup
+    restart: "no"
+    command: /bin/bash -c "while true; do nvd-admin backup; sleep 86400; done"
+    environment:
+      - DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-nvd_monitor_root_2024}
+    volumes:
+      - nvd-db:/var/lib/mysql:ro
+      - nvd-config:/etc/nvd-monitor:ro
+      - nvd-backups:/var/lib/nvd-monitor/backups
+    depends_on:
+      - nvd-monitor
+    networks:
+      - nvd-network
+    profiles:
+      - backup
+
+volumes:
+  nvd-db:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${DATA_PATH:-./data/mysql}
+  
+  nvd-config:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${CONFIG_PATH:-./data/config}
+  
+  nvd-logs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${LOGS_PATH:-./data/logs}
+  
+  nvd-backups:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${BACKUPS_PATH:-./data/backups}
+
+networks:
+  nvd-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16

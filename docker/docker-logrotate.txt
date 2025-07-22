@@ -1,0 +1,13 @@
+/var/log/nvd-monitor/*.log {
+    daily
+    rotate 30
+    compress
+    delaycompress
+    missingok
+    notifempty
+    create 644 nvd-monitor nvd-monitor
+    sharedscripts
+    postrotate
+        supervisorctl restart nvd-monitor > /dev/null 2>&1 || true
+    endscript
+}

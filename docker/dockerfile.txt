@@ -1,0 +1,99 @@
+FROM ubuntu:22.04
+
+LABEL maintainer="Juan Pablo Díaz <contact@jpdiaz.dev>"
+LABEL version="1.0.9"
+LABEL description="NVD Vulnerability Monitor - Automated vulnerability detection system"
+
+# Evitar prompts durante la instalación
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=UTC
+
+# Actualizar sistema e instalar dependencias base
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    python3-venv \
+    python3-dev \
+    build-essential \
+    mariadb-server \
+    mariadb-client \
+    supervisor \
+    curl \
+    wget \
+    git \
+    cron \
+    logrotate \
+    tzdata \
+    && rm -rf /var/lib/apt/lists/*
+
+# Crear usuario para la aplicación
+RUN groupadd -r nvd-monitor && \
+    useradd -r -g nvd-monitor -d /opt/nvd-monitor -s /bin/false nvd-monitor
+
+# Crear directorios necesarios
+RUN mkdir -p /opt/nvd-monitor \
+    /etc/nvd-monitor \
+    /var/log/nvd-monitor \
+    /var/lib/nvd-monitor/scripts \
+    /var/lib/nvd-monitor/backups \
+    /var/lib/nvd-monitor/cache \
+    /run/mysqld
+
+# Copiar archivos de la aplicación
+COPY nvd_monitor.py /opt/nvd-monitor/
+COPY nvd_admin.py /opt/nvd-monitor/
+COPY requirements.txt /opt/nvd-monitor/
+COPY install_docker.sh /opt/nvd-monitor/
+
+# Configurar permisos
+RUN chown -R nvd-monitor:nvd-monitor /opt/nvd-monitor \
+    /var/log/nvd-monitor \
+    /var/lib/nvd-monitor && \
+    chmod 755 /opt/nvd-monitor/*.py && \
+    chmod 755 /opt/nvd-monitor/install_docker.sh
+
+# Instalar dependencias Python
+WORKDIR /opt/nvd-monitor
+RUN python3 -m venv venv && \
+    . venv/bin/activate && \
+    pip install --upgrade pip && \
+    pip install -r requirements.txt
+
+# Crear scripts de comandos
+RUN echo '#!/bin/bash\ncd /opt/nvd-monitor && ./venv/bin/python nvd_monitor.py "$@"' > /usr/local/bin/nvd-monitor && \
+    echo '#!/bin/bash\ncd /opt/nvd-monitor && ./venv/bin/python nvd_admin.py "$@"' > /usr/local/bin/nvd-admin && \
+    echo '#!/bin/bash\necho "NVD Monitor Status:"; supervisorctl status' > /usr/local/bin/nvd-status && \
+    chmod +x /usr/local/bin/nvd-monitor /usr/local/bin/nvd-admin /usr/local/bin/nvd-status
+
+# Configurar supervisor
+COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Configurar logrotate
+COPY docker/logrotate.conf /etc/logrotate.d/nvd-monitor
+
+# Script de entrada
+COPY docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Volúmenes para datos persistentes
+VOLUME ["/var/lib/mysql", "/etc/nvd-monitor", "/var/log/nvd-monitor", "/var/lib/nvd-monitor/backups"]
+
+# Variables de entorno con valores por defecto
+ENV NVD_API_KEY=""
+ENV SMTP_SERVER="smtp.gmail.com"
+ENV SMTP_PORT="587"
+ENV SENDER_EMAIL=""
+ENV SENDER_PASSWORD=""
+ENV RECIPIENT_EMAIL=""
+ENV CHECK_INTERVAL="4"
+ENV DB_ROOT_PASSWORD=""
+
+# Healthcheck
+HEALTHCHECK --interval=5m --timeout=10s --start-period=1m --retries=3 \
+    CMD supervisorctl status nvd-monitor | grep -q "RUNNING" || exit 1
+
+# Puerto para métricas futuras (opcional)
+EXPOSE 9090
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
