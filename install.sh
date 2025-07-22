@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # =============================================================================
-# NVD Vulnerability Monitor - Script de Instalación Final Corregido
+# NVD Vulnerability Monitor - Script de Instalación
 # Versión: 1.0.6
 # Compatible con: Ubuntu 24.04 LTS y superiores
 # =============================================================================
