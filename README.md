@@ -107,6 +107,14 @@ graph TB
 | **Espacio en Disco** | 500MB | Para aplicación y logs |
 | **Conexión Internet** | Requerida | Para NVD API y notificaciones |
 
+### Recomendaciones
+```bash
+# Validar que la fecha del sistema este correcta y en la zona horaria adecuada
+date
+# Si fuese necesario configurar zona horaria
+sudo timedatectl set-timezone "America/Mexico_City"
+```
+
 ### Instalación Rápida
 
 ```bash
