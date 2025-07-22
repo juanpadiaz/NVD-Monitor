@@ -19,7 +19,6 @@ y este proyecto adhiere al [Versionado Semántico](https://semver.org/spec/v2.0.
 - ⚙️ Servicio systemd nativo para Ubuntu 24.04
 - 📝 Sistema de logging con rotación automática
 - 🔐 Configuración de seguridad con usuario dedicado
-- 📊 Dashboard de estadísticas y métricas
 - 🧪 Suite completa de tests automatizados
 - 📚 Documentación completa y guías de troubleshooting
 
