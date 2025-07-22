@@ -469,7 +469,6 @@ sudo cat /etc/nvd-monitor/config.ini | grep -A5 database
 ## 👨‍💻 Autor y Licencia
 
 - **Desarrollador**: Juan Pablo Díaz Ezcurdia
-- **Email**: contact@jpdiaz.dev
 - **Website**: [jpdiaz.dev](https://jpdiaz.dev)
 - **Licencia**: MIT License
 - **Versión**: 1.0.9
@@ -487,7 +486,7 @@ Las contribuciones son bienvenidas! Por favor:
 
 ## 📝 Changelog
 
-### v1.0.9 (Enero 2025)
+### v0.0.9 (Enero 2025)
 - ✅ Implementación completa de descarga de vulnerabilidades
 - ✅ Corrección del error "font-family" en emails
 - ✅ Soporte para múltiples servidores SMTP
