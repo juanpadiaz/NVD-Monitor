@@ -487,7 +487,7 @@ Las contribuciones son bienvenidas! Por favor:
 
 ## 📝 Changelog
 
-### v0.0.9 (Enero 2025)
+### v1.0.9 (Julio 2025)
 - ✅ Implementación completa de descarga de vulnerabilidades
 - ✅ Corrección del error "font-family" en emails
 - ✅ Soporte para múltiples servidores SMTP
@@ -496,7 +496,7 @@ Las contribuciones son bienvenidas! Por favor:
 - ✅ Soporte Docker completo
 - ✅ Documentación actualizada
 
-### v1.0.0 (Julio 2024)
+### v1.0.1 (Mayo 2024)
 - 🎉 Release inicial
 - 📧 Sistema básico de notificaciones
 - 🗄️ Integración con base de datos
