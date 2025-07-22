@@ -115,7 +115,7 @@ git clone https://github.com/juanpadiaz/nvd-monitor.git
 cd nvd-monitor
 
 # 2. Ejecutar instalación (interactiva)
-sudo bash install_final.sh
+sudo bash install.sh
 
 # 3. Verificar instalación
 sudo /var/lib/nvd-monitor/scripts/test_installation.sh
