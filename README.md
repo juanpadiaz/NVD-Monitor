@@ -125,6 +125,7 @@ sudo /var/lib/nvd-monitor/scripts/test_installation.sh
 
 ```bash
 # 1. Construir imagen
+cd docker
 docker build -t nvd-monitor:latest .
 
 # 2. Ejecutar contenedor
