@@ -1,7 +1,7 @@
 # 🛡️ NVD Vulnerability Monitor
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Ubuntu](https://img.shields.io/badge/Ubuntu-20.04%2B%20LTS-orange.svg)](https://ubuntu.com/)
+[![Ubuntu](https://img.shields.io/badge/Ubuntu-24.04%2B%20LTS-orange.svg)](https://ubuntu.com/)
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0+-blue.svg)](https://www.mysql.com/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED.svg)](https://www.docker.com/)
