@@ -482,7 +482,7 @@ sudo cat /etc/nvd-monitor/config.ini | grep -A5 database
 - **Website**: [jpdiaz.com](https://jpdiaz.com)
 - **Licencia**: MIT License
 - **Versión**: 1.0.9
-- **Última actualización**: Enero 2025
+- **Última actualización**: Julio 2025
 
 ## 🤝 Contribuciones
 
