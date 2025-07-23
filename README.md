@@ -9,7 +9,7 @@
 
 ## 📋 Descripción
 
-**NVD Vulnerability Monitor** es un sistema de monitoreo automatizado de vulnerabilidades críticas y de alto riesgo desde la **National Vulnerability Database (NVD)**. El sistema está diseñado para Ubuntu 20.04+ LTS y proporciona detección en tiempo real de vulnerabilidades, almacenamiento persistente en base de datos, y notificaciones automáticas por correo electrónico.
+**NVD Vulnerability Monitor** es un sistema de monitoreo automatizado de vulnerabilidades críticas y de alto riesgo desde la **National Vulnerability Database (NVD)**. El sistema está diseñado para Ubuntu 24.04+ LTS y proporciona detección en tiempo real de vulnerabilidades, almacenamiento persistente en base de datos, y notificaciones automáticas por correo electrónico.
 
 ### 🎯 Características Principales
 
